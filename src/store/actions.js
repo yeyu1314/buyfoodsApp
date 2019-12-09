@@ -32,5 +32,23 @@ export default {
       const shops = result.data
       commit(RECEIVE_SHOPS, {shops})//提交一个mutation
     }
-  }
+  },
+  //记录用户信息
+  recordUserInfo({commit}, userInfo) {
+    commit(RECEIVE_USER_INFO, {userInfo})
+  },
+  // 异步获取用户信息
+  async getUserInfo({commit}) {
+    const result = await reqUser()
+    if (result.code === 0) {
+      commit(RECEIVE_USER_INFO, {userInfo: result.data})
+    }
+  },
+  // 退出登陆
+  async logout({commit}) {
+    const result = await reqLogout()
+    if(result.code===0) {
+      commit(RESET_USER_INFO)
+    }
+  },
 }
