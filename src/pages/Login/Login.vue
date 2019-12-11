@@ -149,7 +149,7 @@
             return
           }
           //发送ajax请求用户名登录
-          result = await reqPwdLogin(name,pwd,captcha)
+          result = await reqPwdLogin({name,pwd,captcha})
         }
         //停止计时
         if(this.computeTime){
@@ -158,14 +158,14 @@
           this.intervalID = undefined
         }
         //根据结果数据处理
-        if(result.code === 0){
+        if(result.code === 0){//登录成功
           const user = result.data
-          // 将user板寸到vuex的state中
+          // 将user保存到vuex的state中
+          this.$store.dispatch('recordUserInfo', user)
           // 跳转路由到 个人中心 界面
           this.$router.replace('/profile')
-        }else {
-          console.log('aaaa',result)
-          this.getCaptcha()//显示心得图片验证码
+        }else {//登录失败
+          this.getCaptcha()//显示新的图片验证码
           const msg = result.msg//显示警告提示框
           this.showAlert(msg)
         }
