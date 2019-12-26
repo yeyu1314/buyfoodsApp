@@ -5,6 +5,9 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import MintUI from 'mint-ui'
+
+Vue.use(MintUI)
 
 new Vue({
   el: '#app',

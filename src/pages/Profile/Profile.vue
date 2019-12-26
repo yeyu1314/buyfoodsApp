@@ -94,6 +94,10 @@
             </div>
           </a>
         </section>
+        <section class="profile_my_order border-1px" v-if="userInfo._id">
+          <!-- 服务中心 -->
+          <mt-button type="danger" class="logout" @click="logout">退出登录</mt-button>
+        </section>
       </section>
     </div>
 </template>
@@ -101,6 +105,7 @@
 <script>
   import {mapState} from 'vuex'
   import HeaderTop from '../../components/HeaderTop/HeaderTop'
+  import {MessageBox} from 'mint-ui'
   export default {
     name: 'Profile',
     components : {
@@ -108,6 +113,13 @@
     },
     computed: {
       ...mapState(['userInfo'])
+    },
+    methods : {
+      logout(){
+        MessageBox.confirm('确定退出登陆吗?').then(action => {
+          this.$store.dispatch('logout')
+        });
+      }
     }
   }
 </script>
@@ -284,4 +296,9 @@
             .icon-jiantou1
               color #bbb
               font-size 10px
+      .logout
+        width 100%
+
+
+
 </style>
