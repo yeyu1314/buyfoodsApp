@@ -6,6 +6,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 import MintUI from 'mint-ui'
+import './mock/mockServer' // 加载mockServer即可
 
 Vue.use(MintUI)
 

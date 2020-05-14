@@ -117,6 +117,7 @@
       },
       // 登录
       async login () {
+        console.log('sss',this.loginWay)
         let result
       //前台表单验证
         if(this.loginWay) {//短信登录
@@ -150,6 +151,8 @@
           }
           //发送ajax请求用户名登录
           result = await reqPwdLogin({name,pwd,captcha})
+          console.log(name, pwd, captcha)
+          console.log(result)
         }
         //停止计时
         if(this.computeTime){

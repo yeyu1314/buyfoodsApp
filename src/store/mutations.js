@@ -1,7 +1,7 @@
 /*
 直接更新state的多个方法的对象
  */
-import {RECEIVE_ADDRESS,RECEIVE_CATEGORYS,RECEIVE_SHOPS,RECEIVE_USER_INFO,RESET_USER_INFO} from './mutation_types'
+import {RECEIVE_ADDRESS,RECEIVE_CATEGORYS,RECEIVE_SHOPS,RECEIVE_USER_INFO,RESET_USER_INFO,RECEIVE_INFO} from './mutation_types'
 export default {
   [RECEIVE_ADDRESS](state,{address}){
     state.address = address
@@ -18,4 +18,8 @@ export default {
   [RESET_USER_INFO](state){
     state.userInfo = {}
   },
+  [RECEIVE_INFO](state, {info}){
+    console.log(info)
+    state.info = info
+  }
 }

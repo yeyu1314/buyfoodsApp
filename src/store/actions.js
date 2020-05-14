@@ -1,8 +1,8 @@
 /*
 通过mutation间接更新state的多个方法的对象
 */
-import {RECEIVE_ADDRESS,RECEIVE_CATEGORYS,RECEIVE_SHOPS,RECEIVE_USER_INFO,RESET_USER_INFO} from './mutation_types'
-import {reqAddress,reqFoodCategorys,reqShops,reqUserInfo,reqLogout} from '../api'
+import {RECEIVE_ADDRESS,RECEIVE_CATEGORYS,RECEIVE_SHOPS,RECEIVE_USER_INFO,RESET_USER_INFO,RECEIVE_INFO} from './mutation_types'
+import {reqAddress,reqFoodCategorys,reqShops,reqUserInfo,reqLogout, reqShopInfo} from '../api'
 export default {
   //异步获取地址
   async getAddress({commit, state}) {
@@ -30,6 +30,7 @@ export default {
     //提交一个mutation
     if(result.code === 0){//判断结果是否正确
       const shops = result.data
+      console.log(shops)
       commit(RECEIVE_SHOPS, {shops})//提交一个mutation
     }
   },
@@ -50,6 +51,17 @@ export default {
     const result = await reqLogout()
     if (result.code === 0) {
       commit(RESET_USER_INFO)
+    }
+  },
+
+
+  // 异步获取商家信息
+  async getShopInfo({commit}) {
+    const result = await reqShopInfo()
+    console.log(result)
+    if (result.code === 0) {
+      const info = result.data
+      commit(RECEIVE_INFO, {info})
     }
   },
 }

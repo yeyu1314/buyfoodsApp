@@ -19,7 +19,7 @@
     methods : {
       ...mapActions(['getAddress','getUserInfo'])
     },
-    created () {
+    created() {
       // 异步获取 address
       // this.$store.dispatch('getAddress')
       // 异步获取登陆用户信息

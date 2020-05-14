@@ -20,7 +20,10 @@
     export default {
         components: {
             ShopHeader
-        }
+        },
+      mounted () {
+        this.$store.dispatch('getShopInfo')
+      },
     }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
