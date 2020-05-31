@@ -10,7 +10,7 @@
             </div>
           </div>
           <div class="login_content">
-            <form>
+            <form @submit.prevent="login">
               <div :class="{on : loginWay}">
                 <section class="login_message">
                   <input type="tel" maxlength="11" placeholder="手机号" v-model="phone">
@@ -41,7 +41,7 @@
                   </section>
                   <section class="login_message">
                     <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
-                    <img class="get_verification" src="./images/captcha.svg" alt="captcha" @click="getCaptcha" ref="captcha">
+                    <img class="get_verification" src="http://localhost:4000/captcha" alt="captcha" @click="getCaptcha" ref="captcha">
                   </section>
                 </section>
               </div>
@@ -61,7 +61,7 @@
 
 <script>
   import AlertTip from '../../components/AlertTip/AlertTip'
-  import {reqSendCode, reqSmsLogin, reqPwdLogin} from '../../api'
+  import {reqSendCode,reqPwdLogin,reqSmsLogin} from '../../api'
   export default {
     name: 'Login',
     data () {
@@ -84,24 +84,26 @@
       }
     },
     methods : {
+      // 获取验证码
       async getCode() {
+        console.log("点击了获取验证码")
         if(!this.computeTime) {//如果当前没有计时
           //启动定时器
-          const computeTime = 60
-          const intervalID = setInterval( () => {
+          this.computeTime = 60
+          this.intervalID = setInterval( () => {
             this.computeTime--
             if(this.computeTime < 0){
-              clearInterval(intervalID)//停止定时器
+              clearInterval(this.intervalID)//停止定时器
             }
           },1000)
           //发送ajax请求（向指定的手机号发送短信验证码）
           const result = await reqSendCode(this.phone)
-          if(result === 1) {
-            //显示提示（验证码发送成功）
+          if(result.code === 1){
+            //显示提示
             this.showAlert(result.msg)
             //停止计时
-            if(this.computeTime) {
-              this.computeTime = 0;
+            if(this.computeTime){
+              this.computeTime = 0
               clearInterval(this.intervalID)
               this.intervalID = undefined
             }
@@ -113,8 +115,10 @@
         this.alertShow = true
         this.alertText = alertText
       },
+      // 登录
       async login () {
-        let result;
+        console.log('sss',this.loginWay)
+        let result
       //前台表单验证
         if(this.loginWay) {//短信登录
           const {rightPhone,phone,code} = this
@@ -122,48 +126,59 @@
             /*this.showAlert = true
             this.alertText = '手机号不正确'*/
             this.showAlert('手机号不正确')
+            return
           }else if(!/^\d{6}$/.test(code)){//验证码不确定/不是6位
             /*this.showAlert = true
             this.alertText = '验证码不确定'*/
             this.showAlert('验证码不正确')
+            return
           }
-          // 发送ajax请求短信登陆
-          result = await reqSmsLogin(phone, code)
+          //发送ajax请求短信登录
+          result = await reqSmsLogin(phone,code)
+
 
         }else {//用户名、密码登录
           const {name,pwd,captcha} = this
           if(!name){//用户名不正确
             this.showAlert('用户名不正确')
+            return
           }else if(!pwd){//密码不正确
             this.showAlert('密码不正确')
+            return
           }else if(!captcha){//验证码不正确
             this.showAlert('验证码不正确')
+            return
           }
-          // 发送ajax请求密码登陆
-          result = await reqPwdLogin({name, pwd, captcha})
+          //发送ajax请求用户名登录
+          result = await reqPwdLogin({name,pwd,captcha})
+          console.log(name, pwd, captcha)
+          console.log(result)
         }
-        // 停止计时
-        if(this.computeTime) {
+        //停止计时
+        if(this.computeTime){
           this.computeTime = 0
-          clearInterval(this.intervalId)
-          this.intervalId = undefined
+          clearInterval(this.intervalID)
+          this.intervalID = undefined
         }
-        // 根据结果数据处理
-        if(result.code===0) {
+        //根据结果数据处理
+        if(result.code === 0){//登录成功
           const user = result.data
-          // 将user保存到vuex的state
-          this.$store.dispatch('recordUser', user)
-          // 去个人中心界面
+          // 将user保存到vuex的state中
+          this.$store.dispatch('recordUserInfo', user)
+          // 跳转路由到 个人中心 界面
           this.$router.replace('/profile')
-        } else {
-          // 显示新的图片验证码
-          this.getCaptcha()
-          // 显示警告提示
-          const msg = result.msg
+        }else {//登录失败
+          this.getCaptcha()//显示新的图片验证码
+          const msg = result.msg//显示警告提示框
           this.showAlert(msg)
         }
       },
-      closeTip () {// 关闭警告窗
+      // 获取图形验证码
+      getCaptcha () {
+        this.$refs.captcha.src = 'http://localhost:4000/captcha?time='+new Date()
+      },
+      // 关闭警告框
+      closeTip () {
         this.alertShow = false
         this.alertText = ''
       },

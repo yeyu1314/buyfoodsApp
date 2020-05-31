@@ -18,7 +18,10 @@
         <i class="iconfont icon-sousuo"></i>
       </span>
       <span class="header_login" slot="right">
-        <span class="header_login_text">登录|注册</span>
+        <span class="header_login_text" v-if="!userInfo._id">>登录|注册</span>
+        <span class="header_login_text " v-else>
+          <i class="iconfont icon-person"></i>
+        </span>
       </span>
     </HeaderTop>
     <!--首页导航-->
@@ -97,7 +100,7 @@
       }
     },
     computed : {
-      ...mapState(['address','categorys']),//读数据
+      ...mapState(['address','categorys','userInfo']),//读数据
       categorysArr () {
         const {categorys} = this
         const arr = []//准备空的 2维数组
